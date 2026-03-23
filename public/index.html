@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlogFlow | API Backend</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.8);
+            margin-top: 0.5rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            text-align: center;
+            color: white;
+            transition: transform 0.2s;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.15);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Forms & Filters */
+        .action-panel {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .action-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1e2a3a;
+            border-left: 4px solid #2c5364;
+            padding-left: 0.75rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.25rem;
+        }
+
+        input, textarea, select {
+            padding: 0.6rem 0.8rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 0.75rem;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #2c5364;
+            box-shadow: 0 0 0 3px rgba(44,83,100,0.2);
+        }
+
+        button {
+            background: #2c5364;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #1e3a47;
+            transform: translateY(-1px);
+        }
+
+        .search-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: flex-end;
+            margin-top: 1rem;
+        }
+
+        .search-filter .form-group {
+            flex: 1;
+            min-width: 180px;
+        }
+
+        /* Articles grid */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .article-card {
+            background: white;
+            border-radius: 1.2rem;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .article-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+        }
+
+        .card-content {
+            padding: 1.2rem;
+            flex: 1;
+        }
+
+        .article-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0f2027;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .article-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            font-size: 0.7rem;
+            color: #5a6874;
+            margin-bottom: 0.8rem;
+            border-bottom: 1px solid #eef2f6;
+            padding-bottom: 0.5rem;
+        }
+
+        .article-meta span {
+            background: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+        }
+
+        .article-content {
+            color: #2d3748;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .article-tags {
+            font-size: 0.7rem;
+            color: #2c5364;
+            margin-bottom: 1rem;
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            border-top: 1px solid #eef2f6;
+            padding: 0.8rem 1.2rem;
+            background: #fafcff;
+        }
+
+        .edit-btn {
+            background: #ed8936;
+            font-size: 0.75rem;
+            padding: 0.3rem 0.8rem;
+        }
+
+        .edit-btn:hover {
+            background: #dd6b20;
+        }
+
+        .delete-btn {
+            background: #e53e3e;
+            font-size: 0.75rem;
+            padding: 0.3rem 0.8rem;
+        }
+
+        .delete-btn:hover {
+            background: #c53030;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 1.5rem;
+            color: #718096;
+        }
+
+        .message {
+            padding: 0.6rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .message.success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .message.error {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 1.8rem;
+            border-radius: 1.5rem;
+            max-width: 550px;
+            width: 90%;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.2);
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #eef2f6;
+        }
+
+        .modal-header h3 {
+            color: #1e2a3a;
+            font-size: 1.3rem;
+        }
+
+        .close-modal {
+            font-size: 1.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: #a0aec0;
+            transition: 0.2s;
+        }
+
+        .close-modal:hover {
+            color: #e53e3e;
+        }
+
+        footer {
+            margin-top: 2rem;
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>✍️ BlogFlow</h1>
+        <p>API Backend · Node.js / Express / SQLite</p>
+    </div>
+
+    <!-- Statistiques dynamiques -->
+    <div class="stats-grid" id="statsContainer">
+        <div class="stat-card"><div class="stat-number">-</div><div class="stat-label">Articles</div></div>
+        <div class="stat-card"><div class="stat-number">-</div><div class="stat-label">Catégories</div></div>
+        <div class="stat-card"><div class="stat-number">-</div><div class="stat-label">Auteurs</div></div>
+        <div class="stat-card"><div class="stat-number">-</div><div class="stat-label">Dernier article</div></div>
+    </div>
+
+    <!-- Création d'article -->
+    <div class="action-panel">
+        <div class="action-title">📝 Nouvel article</div>
+        <div id="createMessage"></div>
+        <form id="createForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Titre *</label>
+                    <input type="text" id="titre" required>
+                </div>
+                <div class="form-group">
+                    <label>Auteur *</label>
+                    <input type="text" id="auteur" required>
+                </div>
+                <div class="form-group">
+                    <label>Catégorie</label>
+                    <input type="text" id="categorie">
+                </div>
+                <div class="form-group">
+                    <label>Tags</label>
+                    <input type="text" id="tags" placeholder="séparés par virgules">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Contenu *</label>
+                <textarea id="contenu" rows="3" required></textarea>
+            </div>
+            <button type="submit">Publier l'article</button>
+        </form>
+    </div>
+
+    <!-- Recherche + filtre catégorie -->
+    <div class="action-panel">
+        <div class="action-title">🔍 Explorer</div>
+        <div class="search-filter">
+            <div class="form-group">
+                <label>Recherche (titre / contenu)</label>
+                <input type="text" id="searchInput" placeholder="mot-clé...">
+            </div>
+            <div class="form-group">
+                <label>Filtrer par catégorie</label>
+                <select id="categoryFilter">
+                    <option value="">Toutes les catégories</option>
+                </select>
+            </div>
+            <button id="applyFiltersBtn">Appliquer</button>
+            <button id="resetFiltersBtn" style="background:#6c757d;">Réinitialiser</button>
+        </div>
+    </div>
+
+    <!-- Liste des articles -->
+    <div class="action-panel" style="padding: 0; overflow: hidden;">
+        <div style="padding: 1rem 1.5rem 0 1.5rem;" class="action-title">📚 Articles récents</div>
+        <div id="articlesList" style="padding: 1rem 1.5rem 1.5rem 1.5rem;">
+            <div class="empty-state">Chargement...</div>
+        </div>
+    </div>
+    <footer>API REST · Documentation Swagger : <a href="/api-docs" target="_blank" style="color:white;">/api-docs</a></footer>
+</div>
+
+<!-- Modal de modification -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>✏️ Modifier l'article</h3>
+            <span class="close-modal" id="closeModalBtn">&times;</span>
+        </div>
+        <form id="editForm">
+            <input type="hidden" id="editId">
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label>Titre</label>
+                <input type="text" id="editTitre" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label>Catégorie</label>
+                <input type="text" id="editCategorie">
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label>Tags</label>
+                <input type="text" id="editTags" placeholder="séparés par virgules">
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label>Contenu</label>
+                <textarea id="editContenu" rows="4" required></textarea>
+            </div>
+            <div style="display: flex; gap: 0.8rem; justify-content: flex-end;">
+                <button type="button" id="cancelEditBtn" style="background:#a0aec0;">Annuler</button>
+                <button type="submit" style="background:#2c5364;">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const API_BASE = 'http://localhost:3000/api/articles';
+
+    let allArticles = [];
+
+    // Éléments DOM
+    const statsDiv = document.getElementById('statsContainer');
+    const articlesContainer = document.getElementById('articlesList');
+    const createForm = document.getElementById('createForm');
+    const createMsgDiv = document.getElementById('createMessage');
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const applyBtn = document.getElementById('applyFiltersBtn');
+    const resetBtn = document.getElementById('resetFiltersBtn');
+
+    // Modal elements
+    const modal = document.getElementById('editModal');
+    const editForm = document.getElementById('editForm');
+    const editId = document.getElementById('editId');
+    const editTitre = document.getElementById('editTitre');
+    const editCategorie = document.getElementById('editCategorie');
+    const editTags = document.getElementById('editTags');
+    const editContenu = document.getElementById('editContenu');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadArticles();
+        createForm.addEventListener('submit', handleCreate);
+        applyBtn.addEventListener('click', applyFilters);
+        resetBtn.addEventListener('click', resetFilters);
+        searchInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') applyFilters(); });
+
+        // Modal events
+        closeModalBtn.addEventListener('click', closeModal);
+        cancelEditBtn.addEventListener('click', closeModal);
+        editForm.addEventListener('submit', handleUpdate);
+        window.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
+    });
+
+    async function loadArticles() {
+        try {
+            const res = await fetch(API_BASE);
+            const data = await res.json();
+            allArticles = data.articles || data;
+            updateStats();
+            updateCategorySelect();
+            applyFilters();
+        } catch (err) {
+            articlesContainer.innerHTML = '<div class="empty-state">❌ Erreur de connexion au serveur</div>';
+        }
+    }
+
+    function updateStats() {
+        const total = allArticles.length;
+        const categories = new Set(allArticles.map(a => a.catégorie).filter(c => c && c.trim() !== ''));
+        const auteurs = new Set(allArticles.map(a => a.auteur).filter(a => a && a.trim() !== ''));
+        const lastDate = allArticles.length ? [...allArticles].sort((a,b) => new Date(b.date) - new Date(a.date))[0].date : '—';
+
+        statsDiv.innerHTML = `
+            <div class="stat-card"><div class="stat-number">${total}</div><div class="stat-label">Articles</div></div>
+            <div class="stat-card"><div class="stat-number">${categories.size}</div><div class="stat-label">Catégories</div></div>
+            <div class="stat-card"><div class="stat-number">${auteurs.size}</div><div class="stat-label">Auteurs</div></div>
+            <div class="stat-card"><div class="stat-number">${lastDate !== '—' ? lastDate : '-'}</div><div class="stat-label">Dernier article</div></div>
+        `;
+    }
+
+    function updateCategorySelect() {
+        const categories = [...new Set(allArticles.map(a => a.catégorie).filter(c => c && c.trim() !== ''))];
+        const currentVal = categoryFilter.value;
+        categoryFilter.innerHTML = '<option value="">Toutes les catégories</option>' +
+            categories.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+        if (currentVal && categories.includes(currentVal)) categoryFilter.value = currentVal;
+    }
+
+    function applyFilters() {
+        const searchTerm = searchInput.value.trim().toLowerCase();
+        const selectedCat = categoryFilter.value;
+
+        let filtered = [...allArticles];
+        if (searchTerm) {
+            filtered = filtered.filter(a =>
+                (a.titre && a.titre.toLowerCase().includes(searchTerm)) ||
+                (a.contenu && a.contenu.toLowerCase().includes(searchTerm))
+            );
+        }
+        if (selectedCat) {
+            filtered = filtered.filter(a => a.catégorie === selectedCat);
+        }
+        renderArticles(filtered);
+    }
+
+    function resetFilters() {
+        searchInput.value = '';
+        categoryFilter.value = '';
+        applyFilters();
+    }
+
+    function renderArticles(articles) {
+        if (!articles.length) {
+            articlesContainer.innerHTML = '<div class="empty-state">📭 Aucun article trouvé.</div>';
+            return;
+        }
+        articlesContainer.innerHTML = articles.map(article => `
+            <div class="article-card">
+                <div class="card-content">
+                    <div class="article-title">${escapeHtml(article.titre)}</div>
+                    <div class="article-meta">
+                        <span>✍️ ${escapeHtml(article.auteur)}</span>
+                        <span>📅 ${article.date}</span>
+                        ${article.catégorie ? `<span>🏷️ ${escapeHtml(article.catégorie)}</span>` : ''}
+                    </div>
+                    <div class="article-content">${escapeHtml(article.contenu.substring(0, 180))}${article.contenu.length > 180 ? '…' : ''}</div>
+                    ${article.tags ? `<div class="article-tags">🔖 ${escapeHtml(article.tags)}</div>` : ''}
+                </div>
+                <div class="card-actions">
+                    <button class="edit-btn" data-id="${article.id}" data-titre="${escapeHtml(article.titre)}" data-categorie="${escapeHtml(article.catégorie || '')}" data-tags="${escapeHtml(article.tags || '')}" data-contenu="${escapeHtml(article.contenu)}">✏️ Modifier</button>
+                    <button class="delete-btn" data-id="${article.id}">🗑️ Supprimer</button>
+                </div>
+            </div>
+        `).join('');
+
+        // Attacher événements suppression
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const id = btn.getAttribute('data-id');
+                if (confirm('Supprimer cet article ?')) {
+                    await deleteArticle(id);
+                }
+            });
+        });
+
+        // Attacher événements modification
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = btn.getAttribute('data-id');
+                const titre = btn.getAttribute('data-titre');
+                const categorie = btn.getAttribute('data-categorie');
+                const tags = btn.getAttribute('data-tags');
+                const contenu = btn.getAttribute('data-contenu');
+                openEditModal(id, titre, categorie, tags, contenu);
+            });
+        });
+    }
+
+    function openEditModal(id, titre, categorie, tags, contenu) {
+        editId.value = id;
+        editTitre.value = titre;
+        editCategorie.value = categorie === 'null' ? '' : categorie;
+        editTags.value = tags === 'null' ? '' : tags;
+        editContenu.value = contenu;
+        modal.style.display = 'block';
+    }
+
+    function closeModal() {
+        modal.style.display = 'none';
+        editForm.reset();
+    }
+
+    async function handleUpdate(e) {
+        e.preventDefault();
+        const id = editId.value;
+        const updates = {
+            titre: editTitre.value,
+            categorie: editCategorie.value || null,
+            tags: editTags.value || null,
+            contenu: editContenu.value
+        };
+
+        try {
+            const res = await fetch(`${API_BASE}/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updates)
+            });
+            if (res.ok) {
+                showMessage(createMsgDiv, '✅ Article modifié avec succès', 'success');
+                closeModal();
+                await loadArticles();
+                setTimeout(() => { if(createMsgDiv.innerHTML) createMsgDiv.innerHTML = ''; }, 2500);
+            } else {
+                const err = await res.json();
+                showMessage(createMsgDiv, `❌ ${err.error || 'Erreur modification'}`, 'error');
+            }
+        } catch (err) {
+            showMessage(createMsgDiv, '❌ Erreur réseau', 'error');
+        }
+    }
+
+    async function handleCreate(e) {
+        e.preventDefault();
+        const article = {
+            titre: document.getElementById('titre').value,
+            auteur: document.getElementById('auteur').value,
+            categorie: document.getElementById('categorie').value || null,
+            tags: document.getElementById('tags').value || null,
+            contenu: document.getElementById('contenu').value
+        };
+        try {
+            const res = await fetch(API_BASE, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(article)
+            });
+            if (res.ok) {
+                showMessage(createMsgDiv, '✅ Article publié !', 'success');
+                createForm.reset();
+                await loadArticles();
+            } else {
+                const err = await res.json();
+                showMessage(createMsgDiv, `❌ ${err.error || 'Erreur'}`, 'error');
+            }
+        } catch (err) {
+            showMessage(createMsgDiv, '❌ Connexion au serveur impossible', 'error');
+        }
+    }
+
+    async function deleteArticle(id) {
+        try {
+            const res = await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                await loadArticles();
+                showMessage(createMsgDiv, '✅ Article supprimé', 'success');
+                setTimeout(() => { if(createMsgDiv.innerHTML) createMsgDiv.innerHTML = ''; }, 2000);
+            } else {
+                alert('Erreur lors de la suppression');
+            }
+        } catch (err) {
+            alert('Erreur réseau');
+        }
+    }
+
+    function showMessage(container, text, type) {
+        container.innerHTML = `<div class="message ${type}">${text}</div>`;
+        setTimeout(() => {
+            if (container.innerHTML.includes(text)) container.innerHTML = '';
+        }, 3000);
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+</script>
+</body>
+</html>cmd
