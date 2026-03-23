@@ -623,9 +623,10 @@
                 body: JSON.stringify(updates)
             });
             if (res.ok) {
-                showMessage(createMsgDiv, '✅ Article modifié avec succès', 'success');
-                closeModal();
-                await loadArticles();
+    showMessage(createMsgDiv, '✅ Article publié !', 'success');
+    createForm.reset();
+    await loadArticles();  // ← cette ligne recharge tout
+}
                 setTimeout(() => { if(createMsgDiv.innerHTML) createMsgDiv.innerHTML = ''; }, 2500);
             } else {
                 const err = await res.json();
