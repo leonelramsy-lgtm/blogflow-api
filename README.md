@@ -178,7 +178,7 @@ nodemon	^3.0.1	Rechargement automatique (développement)
 Mars 2026
 
 🔗 Liens utiles
-    Documentation Swagger https://blogflow-api-1.onrender.com/api-docs
+    Documentation Swagger https://blogflow-api-1.onrender.com/api-docs 
     Interface web https://blogflow-api-1.onrender.com
     Dépôt GitHub https://github.com/leonelramsy-lgtm/blogflow-api
     lien du post linkedin : https://www.linkedin.com/feed/update/urn:li:ugcPost:7442489314153922560/
