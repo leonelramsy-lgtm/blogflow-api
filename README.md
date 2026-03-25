@@ -181,6 +181,7 @@ Mars 2026
     Documentation Swagger https://blogflow-api-1.onrender.com/api-docs
     Interface web https://blogflow-api-1.onrender.com
     Dépôt GitHub https://github.com/leonelramsy-lgtm/blogflow-api
+    lien du post linkedin : https://www.linkedin.com/feed/update/urn:li:ugcPost:7442489314153922560/
 
 📌 Remarque
 
