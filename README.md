@@ -67,12 +67,12 @@ Interface web	http://localhost:3000
 Documentation Swagger	http://localhost:3000/api-docs
 
 📌 Endpoints de l'API
-POST	/api/articles	Créer un nouvel article
-GET	/api/articles	Lister tous les articles (avec filtres)
-GET	/api/articles/search?query=	Rechercher par titre ou contenu
-GET	/api/articles/{id}	Récupérer un article par son ID
-PUT	/api/articles/{id}	Modifier un article
-DELETE	/api/articles/{id}	Supprimer un article
+POST	/api/articles	Créer un nouvel article 
+GET	/api/articles	Lister tous les articles (avec filtres) 
+GET	/api/articles/search?query=	Rechercher par titre ou contenu 
+GET	/api/articles/{id}	Récupérer un article par son ID 
+PUT	/api/articles/{id}	Modifier un article 
+DELETE	/api/articles/{id}	Supprimer un article 
 
 🔍 Filtres disponibles (GET /api/articles)
     Par catégorie : ?categorie=Tech
